@@ -1,73 +1,49 @@
-import React, { useMemo, useState, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./Main.scss";
-import HelloCard from "../components/HelloCard";
-import InstructionCard from "../components/InstructionCard";
+import ProductCard from "../components/ProductCard";
 
 const MainPage = () => {
   const navigate = useNavigate();
   const params = useParams();
-  const [login, setLogin] = useState("POPA");
-  const [password, setPassword] = useState("POPA");
 
-  const [showLogin, setShowLogin] = useState("");
-  const [showPassword, setShowPassword] = useState("");
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const sendData = () => {
-    setShowLogin(login);
-    setShowPassword(password);
-  };
-
-  const texts = useMemo(
-    () => [
-      "Снова работать с Никитой Ичетовкиным",
-      "привет мир",
-      "здравствуй, реальность",
-    ],
-    []
-  );
-
-  const [textHello, setTextHello] = useState(texts[0]);
-
-  const handleNext = useCallback(() => {
-    setTextHello((prev) => {
-      const i = texts.indexOf(prev);
-      const next = texts[(i + 1) % texts.length];
-      return next;
-    });
-  }, [texts]);
+  useEffect(() => {
+    // имитация загрузки одной карточки
+    setTimeout(() => {
+      setProduct({
+        id: 1,
+        image:
+          "https://campioshop.ru/upload/resize_cache/iblock/df9/530_530_1/vu7uj83sxc9wg7yksxo7c5rkxpol31mi.jpg",
+        price: 112000,
+        bonus: 1120,
+        title: "Кроссовки Nike Pegasus",
+      });
+      setLoading(false);
+    }, 2000);
+  }, []);
 
   return (
-    <>
-      <div className="main">
-        <div></div>
-        <div className="main__container">
-          <HelloCard text={textHello} onNext={handleNext} />
-          {showLogin} / {showPassword}
-          <br></br>
-          <input
-            value={login}
-            onChange={(e) => {
-              setLogin(e.target.value);
-            }}
-            type="text"
-          ></input>
-          <br></br>
-          <input
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-            type="password"
-          ></input>
-          <br></br>
-          <button className="btn btn-primary" onClick={sendData}>
-            Отправить
-          </button>
-          <InstructionCard />
-        </div>
+    <div className="main">
+      <div className="main__container">
+        <h2 style={{ marginTop: "20px" }}>Карточка товара</h2>
+
+        {loading ? (
+          <p>Загрузка...</p>
+        ) : (
+          product && (
+            <ProductCard
+              image={product.image}
+              price={product.price}
+              bonus={product.bonus}
+              title={product.title}
+            />
+          )
+        )}
       </div>
-    </>
+    </div>
   );
 };
 
